@@ -1,0 +1,29 @@
+<div>
+  <input class='input-field' placeholder="Zitting Id" value={{zittingId}} autofocus oninput={{action updateZittingId value='target.value'}}>
+</div>
+<div>
+  <WuRadioButton @label='News Items' @name="exportType" @checked={{eq exportType "news-items"}} @onClick={{action (mut exportType) "news-items"}} /> 
+  <WuRadioButton @label='Announcements' @name="exportType" @checked={{eq exportType "announcements"}} @onClick={{action (mut exportType) "announcements"}} /> 
+  <WuRadioButton @label='News Items + Announcements' @name="exportType" @checked={{eq exportType "news-items-and-announcements"}} @onClick={{action (mut exportType) "news-items-and-announcements"}} />
+  <WuRadioButton @label='All' @name="exportType" @checked={{eq exportType "all"}} @onClick={{action (mut exportType) "all"}} />
+</div>
+<div>
+  <WuCheckbox @name='documentNotification' @checked={{documentNotification}} @onClick={{action updateDocumentNotification value='target.checked'}} > Document Notification</WuCheckbox>
+  {{#if documentNotification}}
+    <input class='input-field' placeholder="session date" value={{sessionDate}} oninput={{action updateSessionDate value='target.value'}} />
+    <input class='input-field' placeholder="document publication dateTime" value={{documentPublicationDateTime}} oninput={{action updateDocumentPublicationDateTime value='target.value'}} />
+  {{/if}}
+</div>
+<div>
+  <WuButton @onClick={{action 'exportZitting'}}>Export</WuButton>
+</div>
+{{#if documentNotification}}
+  <div>
+    <WuCheckbox @name='previewNotification' @checked={{previewNotification}} @onClick={{action updatePreviewNotification value='target.checked'}} >Preview Notification</WuCheckbox>
+    {{#if previewNotification}}
+      <h2>Document ministerraad {{sessionDate}}</h2>
+      <p>De documenten van deze ministerraad zullen beschikbaar zijn vanaf {{documentPublicationDateTime}}.</p>
+    {{/if}}
+  </div>
+{{/if}}
+{{outlet}}

@@ -1,0 +1,10 @@
+.document-notification-preview {
+  border: 1px solid;
+  background-color: lightgray;
+}
+
+.warning {
+  padding: 5px;
+  border: 1px solid red;
+  color: red;
+}

@@ -4,7 +4,6 @@ import { action } from '@ember/object';
 export default class IndexController extends Controller {
   constructor() {
     super(...arguments);
-    this.zittingId = '';
     this.exportType = 'all';
     this.documentNotification = false;
     this.documentPublicationDateTime = '';
@@ -36,10 +35,6 @@ export default class IndexController extends Controller {
       },
       body: JSON.stringify(body)
     });
-  }
-
-  updateZittingId(value) {
-    this.set('zittingId', value);
   }
 
   updateDocumentNotification(value) {

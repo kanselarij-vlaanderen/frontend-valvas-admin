@@ -1,5 +1,6 @@
 <div>
-  <input class='input-field' placeholder="Zitting Id" value={{zittingId}} autofocus oninput={{action updateZittingId value='target.value'}}>
+  <label for="session-id">Zitting UUID</label>
+  <Input id="session-id" @value={{this.sessionId}} />
 </div>
 <div>
   <WuRadioButton @label='News Items' @name="exportType" @checked={{eq exportType "news-items"}} @onClick={{action (mut exportType) "news-items"}} /> 

@@ -44,7 +44,22 @@
       {{this.error}}
     </div>
   {{else}}
-    <button type="button" {{on "click" this.exportSession}}>Start export</button>
+    {{#if this.exportSession.isRunning}}
+      Bezig...
+    {{else}}
+      <button type="button" {{on "click" (perform this.exportSession)}}>Start export</button>
+
+      {{#if this.exportSession.last.isError}}
+        <div class="warning">
+          Er is iets misgelopen bij het exporteren
+        </div>
+      {{/if}}
+      {{#if this.exportSession.last.isSuccessful}}
+        <div class="success">
+          Export gestart
+        </div>
+      {{/if}}
+    {{/if}}
   {{/if}}
 </div>
 

@@ -2,6 +2,8 @@ import Controller from '@ember/controller';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { isBlank } from '@ember/utils';
+import { task } from 'ember-concurrency-decorators';
+import fetch from 'fetch';
 
 class ExportScope {
   @tracked label;
@@ -38,8 +40,8 @@ export default class IndexController extends Controller {
     return null;
   }
 
-  @action
-  exportSession() {
+  @task
+  *exportSession() {
     const scope = this.scopes.filter(scope => scope.includeInExport).map(scope => scope.value);
     if (scope.includes('documents')) {
       if (!scope.includes('news-items'))
@@ -56,12 +58,17 @@ export default class IndexController extends Controller {
         documentPublicationDateTime: this.documentPublicationDateTime
       };
     }
-    fetch(`/export/${this.sessionId}`, {
+
+    const response = yield fetch(`/export/${this.sessionId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(body)
     });
+
+    if (!response.ok) {
+      throw new Error('Something went wrong running the export');
+    }
   }
 }

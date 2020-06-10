@@ -8,3 +8,9 @@
   border: 1px solid red;
   color: red;
 }
+
+.success {
+  padding: 5px;
+  border: 1px solid green;
+  color: green;
+}

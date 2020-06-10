@@ -1,6 +1,7 @@
 import Controller from '@ember/controller';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
+import { isBlank } from '@ember/utils';
 
 class ExportScope {
   @tracked label;
@@ -26,6 +27,15 @@ export default class IndexController extends Controller {
   @tracked sessionDate;
   @tracked documentPublicationDateTime;
 
+  get error() {
+    if (isBlank(this.sessionId)) {
+      return "Geef een zitting UUID in";
+    } else if (this.isEnabledDocumentNotification) {
+      if (isBlank(this.sessionDate) || isBlank(this.documentPublicationDateTime)) {
+        return "Geef de nodige datums voor de document notificatie in";
+      }
+    }
+    return null;
   }
 
   @action

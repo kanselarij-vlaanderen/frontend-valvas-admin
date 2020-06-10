@@ -38,15 +38,14 @@
   {{/if}}
 </div>
 <div>
-  <WuButton @onClick={{action 'exportZitting'}}>Export</WuButton>
+  <h2>Klaar?</h2>
+  {{#if this.error}}
+    <div class="warning">
+      {{this.error}}
+    </div>
+  {{else}}
+    <button type="button" {{on "click" this.exportSession}}>Start export</button>
+  {{/if}}
 </div>
-{{#if documentNotification}}
-  <div>
-    <WuCheckbox @name='previewNotification' @checked={{previewNotification}} @onClick={{action updatePreviewNotification value='target.checked'}} >Preview Notification</WuCheckbox>
-    {{#if previewNotification}}
-      <h2>Document ministerraad {{sessionDate}}</h2>
-      <p>De documenten van deze ministerraad zullen beschikbaar zijn vanaf {{documentPublicationDateTime}}.</p>
-    {{/if}}
-  </div>
-{{/if}}
+
 {{outlet}}

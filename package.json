@@ -1,11 +1,13 @@
 {
   "name": "frontend-valvas-admin",
   "version": "0.0.0",
-  "private": true,
-  "description": "Small description for frontend-valvas-admin goes here",
-  "repository": "",
+  "description": "Admin interface for the Valvas application",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kanselarij-vlaanderen/frontend-valvas-admin.git"
+  },
   "license": "MIT",
-  "author": "",
+  "author": "redpencil.io",
   "directories": {
     "doc": "doc",
     "test": "tests"

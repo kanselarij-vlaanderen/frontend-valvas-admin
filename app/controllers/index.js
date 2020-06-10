@@ -41,7 +41,15 @@ export default class IndexController extends Controller {
   @action
   exportSession() {
     const scope = this.scopes.filter(scope => scope.includeInExport).map(scope => scope.value);
+    if (scope.includes('documents')) {
+      if (!scope.includes('news-items'))
+        scope.push('news-items');
+      if (!scope.includes('announcements'))
+        scope.push('announcements');
+    }
+
     const body = { scope };
+
     if (this.isEnabledDocumentNotification) {
       body.documentNotification = {
         sessionDate: this.sessionDate,

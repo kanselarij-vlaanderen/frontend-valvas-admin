@@ -21,25 +21,24 @@ export default class IndexController extends Controller {
     new ExportScope({ label: 'Documenten', value: 'documents', includeInExport: false })
   ];
 
-  constructor() {
-    super(...arguments);
-    this.documentNotification = false;
-    this.documentPublicationDateTime = '';
-    this.sessionDate = '';
-    this.previewNotification = false;
+  @tracked sessionId;
+  @tracked isEnabledDocumentNotification = false;
+  @tracked sessionDate;
+  @tracked documentPublicationDateTime;
+
   }
 
   @action
-  exportZitting() {
-    const scope = this.scopes.findAll(scope => scope.includeInExport).map(scope => scope.value);
+  exportSession() {
+    const scope = this.scopes.filter(scope => scope.includeInExport).map(scope => scope.value);
     const body = { scope };
-    if (this.documentNotification) {
+    if (this.isEnabledDocumentNotification) {
       body.documentNotification = {
         sessionDate: this.sessionDate,
         documentPublicationDateTime: this.documentPublicationDateTime
       };
     }
-    fetch(`/export/${this.zittingId}`, {
+    fetch(`/export/${this.sessionId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -47,21 +46,4 @@ export default class IndexController extends Controller {
       body: JSON.stringify(body)
     });
   }
-
-  updateDocumentNotification(value) {
-    this.set('documentNotification', value);
-  }
-
-  updateSessionDate(value) {
-    this.set('sessionDate', value);
-  }
-
-  updateDocumentPublicationDateTime(value) {
-    this.set('documentPublicationDateTime', value);
-  }
-
-  updatePreviewNotification(value) {
-    this.set('previewNotification', value);
-  }
-
 }

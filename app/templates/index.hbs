@@ -5,10 +5,13 @@
   <Input id="session-id" @value={{this.sessionId}} />
 </div>
 <div>
-  <WuRadioButton @label='News Items' @name="exportType" @checked={{eq exportType "news-items"}} @onClick={{action (mut exportType) "news-items"}} /> 
-  <WuRadioButton @label='Announcements' @name="exportType" @checked={{eq exportType "announcements"}} @onClick={{action (mut exportType) "announcements"}} /> 
-  <WuRadioButton @label='News Items + Announcements' @name="exportType" @checked={{eq exportType "news-items-and-announcements"}} @onClick={{action (mut exportType) "news-items-and-announcements"}} />
-  <WuRadioButton @label='All' @name="exportType" @checked={{eq exportType "all"}} @onClick={{action (mut exportType) "all"}} />
+  <h2>Exporteer</h2>
+  {{#each this.scopes as |scope|}}
+    <div>
+      <Input id="export-scope-{{scope.value}}" @type="checkbox" @checked={{scope.includeInExport}} />
+      <label for="export-scope-{{scope.value}}">{{scope.label}}</label>
+    </div>
+  {{/each}}
 </div>
 <div>
   <WuCheckbox @name='documentNotification' @checked={{documentNotification}} @onClick={{action updateDocumentNotification value='target.checked'}} > Document Notification</WuCheckbox>

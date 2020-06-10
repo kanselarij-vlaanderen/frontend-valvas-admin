@@ -1,28 +1,39 @@
 import Controller from '@ember/controller';
 import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
+
+class ExportScope {
+  @tracked label;
+  @tracked value;
+  @tracked includeInExport;
+
+  constructor({ label, value, includeInExport }) {
+    this.label = label;
+    this.value = value;
+    this.includeInExport = includeInExport;
+  }
+}
 
 export default class IndexController extends Controller {
+  scopes = [
+    new ExportScope({ label: 'Nieuwsberichten', value: 'news-items', includeInExport: true }),
+    new ExportScope({ label: 'Mededelingen', value: 'announcements', includeInExport: true }),
+    new ExportScope({ label: 'Documenten', value: 'documents', includeInExport: false })
+  ];
+
   constructor() {
     super(...arguments);
-    this.exportType = 'all';
     this.documentNotification = false;
     this.documentPublicationDateTime = '';
     this.sessionDate = '';
     this.previewNotification = false;
-    this.scopes = {
-      'news-items': ['news-items'],
-      'announcements': ['announcements'],
-      'news-items-and-announcements' : [ 'news-items', 'announcements' ],
-      'all' : [ 'news-items', 'announcements', 'documents' ]
-    };
   }
 
   @action
   exportZitting() {
-    const body= {
-      scope: this.scopes[this.exportType]
-    };
-    if(this.documentNotification) {
+    const scope = this.scopes.findAll(scope => scope.includeInExport).map(scope => scope.value);
+    const body = { scope };
+    if (this.documentNotification) {
       body.documentNotification = {
         sessionDate: this.sessionDate,
         documentPublicationDateTime: this.documentPublicationDateTime

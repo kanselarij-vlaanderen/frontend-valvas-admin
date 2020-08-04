@@ -41,7 +41,22 @@ export default class IndexController extends Controller {
   }
 
   @task
-  *exportSession() {
+  *triggerExport(body) {
+    const response = yield fetch(`/export/${this.sessionId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+      throw new Error('Something went wrong while exporting the session');
+    }
+  }
+
+  @task
+  *publish() {
     const scope = this.scopes.filter(scope => scope.includeInExport).map(scope => scope.value);
     if (scope.includes('documents')) {
       if (!scope.includes('news-items'))
@@ -59,16 +74,12 @@ export default class IndexController extends Controller {
       };
     }
 
-    const response = yield fetch(`/export/${this.sessionId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    });
+    yield this.triggerExport.perform(body);
+  }
 
-    if (!response.ok) {
-      throw new Error('Something went wrong running the export');
-    }
+  @task
+  *unpublish() {
+    const body = { scope: [] };
+    yield this.triggerExport.perform(body);
   }
 }

@@ -14,3 +14,33 @@
   border: 1px solid green;
   color: green;
 }
+
+.note {
+  color: grey;
+}
+
+.highlight {
+  background-color: yellow;
+}
+
+input[type="text"] {
+  width: 250px;
+}
+
+button.publish {
+  background-color: green;
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+  font-size: 17px;
+  border: none;
+}
+
+button.unpublish {
+  background-color: red;
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+  font-size: 17px;
+  border: none;
+}

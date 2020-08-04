@@ -1,23 +1,22 @@
 <h1>Publiceer zitting naar Valvas</h1>
 
 <div>
+  <h2>Wat is de UUID van de zitting?</h2>
   <label for="session-id">Zitting UUID</label>
   <Input id="session-id" @value={{this.sessionId}} />
+  <div class="note">Vb. https://kaleidos.vlaanderen.be/vergadering/<span class="highlight">5E81EF7D5AB66F0008000270</span>/agenda/5E81EF7E5AB66F0008000271/agendapunten</div>
 </div>
 <div>
-  <h2>Exporteer</h2>
+  <h2>Wat moet er gepubliceerd worden?</h2>
   {{#each this.scopes as |scope|}}
     <div>
       <Input id="export-scope-{{scope.value}}" @type="checkbox" @checked={{scope.includeInExport}} />
       <label for="export-scope-{{scope.value}}">{{scope.label}}</label>
     </div>
   {{/each}}
-</div>
-<div>
-  <h2>Documenten notificatie</h2>
   <div>
     <Input id="document-notification-flag" @type="checkbox" @checked={{this.isEnabledDocumentNotification}} />
-    <label for="document-notification-flag">Voeg document notificatie toe</label>
+    <label for="document-notification-flag">Notificatie over de publicatie van de documenten</label>
   </div>
 
   {{#if this.isEnabledDocumentNotification}}
@@ -30,7 +29,7 @@
       <Input id="document-publication-date" @value={{this.documentPublicationDateTime}} placeholder="8 juni 2020 om 14:00" />
     </div>
 
-    <h3>Preview</h3>
+    <h3>Preview notificatie</h3>
     <div class="document-notification-preview">
       <strong>Documenten ministerraad {{this.sessionDate}}</strong>
       <div>De documenten van deze ministerraad zullen beschikbaar zijn vanaf {{this.documentPublicationDateTime}}.</div>
@@ -47,14 +46,15 @@
     {{#if this.exportSession.isRunning}}
       Bezig...
     {{else}}
-      <button type="button" {{on "click" (perform this.exportSession)}}>Start export</button>
+      <button type="button" class="publish" {{on "click" (perform this.publish)}}>Publiceer zitting</button>
+      <button type="button" class="unpublish" {{on "click" (perform this.unpublish)}}>Verwijder publicatie</button>
 
-      {{#if this.exportSession.last.isError}}
+      {{#if this.triggerExport.last.isError}}
         <div class="warning">
           Er is iets misgelopen bij het exporteren
         </div>
       {{/if}}
-      {{#if this.exportSession.last.isSuccessful}}
+      {{#if this.triggerExport.last.isSuccessful}}
         <div class="success">
           Export gestart
         </div>

@@ -18,7 +18,7 @@ class ExportScope {
 
 export default class IndexController extends Controller {
   scopes = [
-    new ExportScope({ label: 'Nieuwsberichten', value: 'news-items', includeInExport: true }),
+    new ExportScope({ label: 'Nieuwsberichten', value: 'newsitems', includeInExport: true }),
     new ExportScope({ label: 'Documenten', value: 'documents', includeInExport: false })
   ];
 
@@ -35,14 +35,14 @@ export default class IndexController extends Controller {
   @task
   *publish() {
     const scope = this.scopes.filter(scope => scope.includeInExport).map(scope => scope.value);
-    if (scope.includes('documents') && !scope.includes('news-items')) {
-      scope.push('news-items');
+    if (scope.includes('documents') && !scope.includes('newsitems')) {
+      scope.push('newsitems');
     }
 
     const response = yield fetch(`/meetings/${this.sessionId}/publication-activities`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/vnd.api+json'
       },
       body: JSON.stringify({
         data: {

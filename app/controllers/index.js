@@ -1,5 +1,4 @@
 import Controller from '@ember/controller';
-import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { isBlank } from '@ember/utils';
 import { task } from 'ember-concurrency-decorators';
@@ -20,34 +19,39 @@ class ExportScope {
 export default class IndexController extends Controller {
   scopes = [
     new ExportScope({ label: 'Nieuwsberichten', value: 'news-items', includeInExport: true }),
-    new ExportScope({ label: 'Mededelingen', value: 'announcements', includeInExport: true }),
     new ExportScope({ label: 'Documenten', value: 'documents', includeInExport: false })
   ];
 
   @tracked sessionId;
-  @tracked isEnabledDocumentNotification = false;
-  @tracked sessionDate;
-  @tracked documentPublicationDateTime;
 
   get error() {
     if (isBlank(this.sessionId)) {
       return "Geef een zitting UUID in";
-    } else if (this.isEnabledDocumentNotification) {
-      if (isBlank(this.sessionDate) || isBlank(this.documentPublicationDateTime)) {
-        return "Geef de nodige datums voor de document notificatie in";
-      }
+    } else {
+      return null;
     }
-    return null;
   }
 
   @task
-  *triggerExport(body) {
-    const response = yield fetch(`/export/${this.sessionId}`, {
+  *publish() {
+    const scope = this.scopes.filter(scope => scope.includeInExport).map(scope => scope.value);
+    if (scope.includes('documents') && !scope.includes('news-items')) {
+      scope.push('news-items');
+    }
+
+    const response = yield fetch(`/meetings/${this.sessionId}/publication-activities`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify({
+        data: {
+          type: 'publication-activity',
+          attributes: {
+            scope: scope
+          }
+        }
+      })
     });
 
     if (!response.ok) {
@@ -56,30 +60,8 @@ export default class IndexController extends Controller {
   }
 
   @task
-  *publish() {
-    const scope = this.scopes.filter(scope => scope.includeInExport).map(scope => scope.value);
-    if (scope.includes('documents')) {
-      if (!scope.includes('news-items'))
-        scope.push('news-items');
-      if (!scope.includes('announcements'))
-        scope.push('announcements');
-    }
-
-    const body = { scope };
-
-    if (this.isEnabledDocumentNotification) {
-      body.documentNotification = {
-        sessionDate: this.sessionDate,
-        documentPublicationDateTime: this.documentPublicationDateTime
-      };
-    }
-
-    yield this.triggerExport.perform(body);
-  }
-
-  @task
   *unpublish() {
-    const body = { scope: [] };
-    yield this.triggerExport.perform(body);
+    this.scopes.forEach(scope => scope.includeInExport = false);
+    yield this.publish.perform();
   }
 }

@@ -1,4 +1,4 @@
-<h1>Publiceer zitting naar Valvas</h1>
+<h1>Publiceer zitting naar Themis</h1>
 
 <div>
   <h2>Wat is de UUID van de zitting?</h2>
@@ -14,27 +14,6 @@
       <label for="export-scope-{{scope.value}}">{{scope.label}}</label>
     </div>
   {{/each}}
-  <div>
-    <Input id="document-notification-flag" @type="checkbox" @checked={{this.isEnabledDocumentNotification}} />
-    <label for="document-notification-flag">Notificatie over de publicatie van de documenten</label>
-  </div>
-
-  {{#if this.isEnabledDocumentNotification}}
-    <div>
-      <label for="session-date">Datum zitting</label>
-      <Input id="session-date" @value={{this.sessionDate}} placeholder="5 juni 2020" />
-    </div>
-    <div>
-      <label for="document-publication-date">Datum publicatie documenten</label>
-      <Input id="document-publication-date" @value={{this.documentPublicationDateTime}} placeholder="8 juni 2020 om 14:00" />
-    </div>
-
-    <h3>Preview notificatie</h3>
-    <div class="document-notification-preview">
-      <strong>Documenten ministerraad {{this.sessionDate}}</strong>
-      <div>De documenten van deze ministerraad zullen beschikbaar zijn vanaf {{this.documentPublicationDateTime}}.</div>
-    </div>
-  {{/if}}
 </div>
 <div>
   <h2>Klaar?</h2>
@@ -43,18 +22,18 @@
       {{this.error}}
     </div>
   {{else}}
-    {{#if this.exportSession.isRunning}}
+    {{#if this.publish.isRunning}}
       Bezig...
     {{else}}
       <button type="button" class="publish" {{on "click" (perform this.publish)}}>Publiceer zitting</button>
       <button type="button" class="unpublish" {{on "click" (perform this.unpublish)}}>Verwijder publicatie</button>
 
-      {{#if this.triggerExport.last.isError}}
+      {{#if this.publish.last.isError}}
         <div class="warning">
           Er is iets misgelopen bij het exporteren
         </div>
       {{/if}}
-      {{#if this.triggerExport.last.isSuccessful}}
+      {{#if this.publish.last.isSuccessful}}
         <div class="success">
           Export gestart
         </div>
